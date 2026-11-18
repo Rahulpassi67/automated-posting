@@ -1,11 +1,10 @@
 
 
-import os
 import asyncio
-from datetime import datetime, timezone
 
 from atproto import Client
 
+from app.config import BLUESKY_HANDLE, BLUESKY_APP_PASSWORD
 from app.platforms.base import BasePlatform
 from app.schemas import PostingRequest, PlatformResult
 
@@ -13,56 +12,58 @@ from app.schemas import PostingRequest, PlatformResult
 class BlueskyPlatform(BasePlatform):
     """Bluesky social media integration."""
 
-    platform_name: str = "bluesky"
+    platform_name = "bluesky"
 
     async def publish(
         self,
-        request: PostingRequest
+        request: PostingRequest,
     ) -> PlatformResult:
 
-        handle = os.getenv("BLUESKY_HANDLE")
-        app_password = os.getenv("BLUESKY_APP_PASSWORD")
-
-        if not handle or not app_password:
+        if not BLUESKY_HANDLE or not BLUESKY_APP_PASSWORD:
             return PlatformResult(
-                platform="bluesky",
+                platform=self.platform_name,
                 success=False,
-                error="Bluesky credentials are missing."
+                error="Bluesky credentials are missing.",
             )
 
+        def publish_post():
+            client = Client()
+
+            client.login(
+                BLUESKY_HANDLE,
+                BLUESKY_APP_PASSWORD,
+            )
+
+            message = request.message.strip()
+
+            if request.cta_url:
+                message += f"\n\n{request.cta_url}"
+
+            response = client.send_post(text=message)
+
+            return response.uri
+
         try:
-            def publish_post():
-                client = Client()
-                client.login(handle, app_password)
-
-                message = request.message
-
-                if request.cta_url:
-                    message += f"\n{request.cta_url}"
-
-                response = client.send_post(text=message)
-
-                return response.uri
-
             post_uri = await asyncio.to_thread(publish_post)
 
-            record_key = post_uri.split("/")[-1]
+            record_key = post_uri.rsplit("/", 1)[-1]
+
+            handle = BLUESKY_HANDLE.lstrip("@")
 
             published_url = (
                 f"https://bsky.app/profile/{handle}/post/{record_key}"
             )
 
             return PlatformResult(
-                platform="bluesky",
+                platform=self.platform_name,
                 success=True,
                 post_id=post_uri,
                 published_url=published_url,
-                published_at=datetime.now(timezone.utc)
             )
 
         except Exception as exc:
             return PlatformResult(
-                platform="bluesky",
+                platform=self.platform_name,
                 success=False,
-                error=str(exc)
+                error=f"Bluesky publishing failed: {str(exc)}",
             )

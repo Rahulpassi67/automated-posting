@@ -157,6 +157,15 @@ APP_ENV=development
 APP_NAME=Dxora
 DEBUG=False
 
+BLUESKY_HANDLE=your_bluesky_handle
+BLUESKY_APP_PASSWORD=your_bluesky_app_password
+
+MASTODON_BASE_URL=https://mastodon.social
+MASTODON_ACCESS_TOKEN=your_mastodon_access_token
+
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_CHAT_ID=your_telegram_chat_id
+
 FACEBOOK_PAGE_ID=your_facebook_page_id
 FACEBOOK_PAGE_ACCESS_TOKEN=your_facebook_page_access_token
 
