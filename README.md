@@ -1,218 +1,199 @@
-# Dxora — Automated Multi-Platform Posting API
+# Dxora – Automated Multi-Platform Posting API
 
-## Overview
+**A Python-based social media automation system built using FastAPI.**
 
-Dxora is a Python-based social media automation project that allows users to publish content across multiple social media platforms through a centralized REST API.
+Dxora is a multi-platform social media posting API that allows users to publish content across multiple social media platforms through a centralized REST API.
 
-Built using FastAPI, the application supports asynchronous publishing, platform-specific integrations, input validation, and independent error handling.
+The project uses asynchronous programming, platform-specific integrations, environment-based configuration, and independent error handling to simplify social media publishing.
 
-## Features
+---
+
+## 1. Project Overview
+
+Managing social media accounts across multiple platforms can be time-consuming. Dxora aims to simplify this process by providing a centralized API through which users can publish content to multiple platforms.
+
+The application integrates individual platform adapters with a common posting service. It supports asynchronous publishing and isolates platform failures so that an error on one platform does not necessarily interrupt publishing on others.
+
+## 2. Features
 
 - Centralized REST API for social media publishing.
 - Integration with five social media platforms.
 - Asynchronous publishing using Python's `asyncio`.
-- Independent execution of platform publishing tasks.
-- Error isolation so one platform's failure does not stop other publishing attempts.
-- Environment-based credential management.
+- Platform-specific publishing adapters.
+- Independent error handling and failure isolation.
+- Environment-based configuration using environment variables.
 - Request validation using Pydantic.
 - Automated testing using Pytest.
+- FastAPI interactive API documentation.
+- Secure separation of environment credentials from source code.
 
-## Supported Platforms
+## 3. Supported Platforms
+
+Dxora currently supports the following integrations:
 
 | Platform | Integration |
 |---|---|
 | Bluesky | Integrated |
-| Telegram | Integrated |
 | Mastodon | Integrated |
+| Telegram | Integrated |
 | Facebook Pages | Integrated |
 | Threads | Integrated |
 
-## Tech Stack
+Each platform has its own adapter that handles platform-specific authentication and publishing requests.
 
-- **Language:** Python
-- **Backend Framework:** FastAPI
-- **Server:** Uvicorn
-- **Data Validation:** Pydantic
-- **HTTP Client:** HTTPX / Requests
-- **Environment Management:** Python-dotenv
-- **Testing:** Pytest
+## 4. Technology Stack
 
-## Project Structure
+| Technology | Purpose |
+|---|---|
+| Python | Core programming language |
+| FastAPI | REST API framework |
+| HTTPX | Asynchronous HTTP requests |
+| Pydantic | Request validation and data schemas |
+| asyncio | Asynchronous task execution |
+| Pytest | Automated testing |
+| python-dotenv | Environment variable management |
+| Git & GitHub | Version control and project hosting |
+
+## 5. Project Structure
 
 ```text
 automated-posting/
 │
 ├── app/
+│   ├── main.py
+│   ├── config.py
+│   ├── schemas.py
+│   │
 │   ├── platforms/
 │   │   ├── base.py
 │   │   ├── bluesky.py
-│   │   ├── telegram.py
 │   │   ├── mastodon.py
+│   │   ├── telegram.py
 │   │   ├── facebook.py
 │   │   └── threads.py
 │   │
-│   ├── services/
-│   │   └── posting_service.py
-│   │
-│   ├── config.py
-│   ├── main.py
-│   └── schemas.py
+│   └── services/
+│       └── posting_service.py
 │
 ├── tests/
 │   ├── test_posting.py
 │   ├── test_facebook.py
 │   └── test_threads.py
 │
+├── .env
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
 
-## Installation and Setup
+**Note:** The `.env` file contains private credentials and must never be committed to GitHub.
 
-### 1. Clone the Repository
+## 6. Prerequisites
+
+Before running the project, ensure that you have:
+
+- Python 3.10 or later.
+- pip (Python package installer).
+- Git.
+- A code editor such as Visual Studio Code.
+- Developer credentials or API access for the social media platforms you want to use.
+
+## 7. Installation and Setup
+
+### Step 1: Clone the repository
 
 ```bash
-git clone YOUR_REPOSITORY_URL
+git clone https://github.com/Rahulpassi67/automated-posting.git
+```
+
+### Step 2: Navigate to the project directory
+
+```bash
 cd automated-posting
 ```
 
-### 2. Create a Virtual Environment
+### Step 3: Create a virtual environment
 
 ```bash
-python -m venv venv
+python3 -m venv venv
 ```
 
-Activate it on macOS/Linux:
+### Step 4: Activate the virtual environment
+
+**macOS / Linux:**
 
 ```bash
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
+**Windows:**
+
+```bash
+venv\Scripts\activate
+```
+
+### Step 5: Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment Variables
+## 8. Environment Configuration
+
+The application uses environment variables to manage application settings and API credentials.
 
 Create a `.env` file in the project root directory.
 
-Use `.env.example` as a reference and add your own platform credentials locally.
+Use `.env.example` as a reference for the configuration structure.
 
-Required environment variables:
+The example configuration includes:
 
 ```env
-BLUESKY_HANDLE=your_handle
-BLUESKY_APP_PASSWORD=your_app_password
+API_HOST=127.0.0.1
+API_PORT=8000
 
-TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_CHAT_ID=your_chat_id
+APP_ENV=development
+APP_NAME=Dxora
+DEBUG=False
 
-MASTODON_BASE_URL=https://mastodon.social
-MASTODON_ACCESS_TOKEN=your_access_token
-
-FACEBOOK_PAGE_ID=your_page_id
-FACEBOOK_PAGE_ACCESS_TOKEN=your_page_access_token
+FACEBOOK_PAGE_ID=your_facebook_page_id
+FACEBOOK_PAGE_ACCESS_TOKEN=your_facebook_page_access_token
 
 THREADS_USER_ID=your_threads_user_id
 THREADS_ACCESS_TOKEN=your_threads_access_token
 ```
 
-**Security:** Never upload your `.env` file or actual API credentials to GitHub.
+Replace the placeholder values with your own credentials where applicable.
 
-## Running the Application
+**Important security practices:**
 
-Start the FastAPI development server:
+- Never upload your actual `.env` file to GitHub.
+- Never expose access tokens, API keys, or passwords.
+- Keep `.env` included in `.gitignore`.
+- Use `.env.example` to document the required configuration without exposing secrets.
+
+Additional platform credentials should be configured according to the corresponding adapter and application configuration.
+
+## 9. Running the Application
+
+Ensure that your virtual environment is activated and dependencies are installed.
+
+Start the FastAPI development server using:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The API will be available at:
+By default, the application runs at:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-Interactive API documentation:
+### Interactive API Documentation
 
-```text
-http://127.0.0.1:8000/docs
-```
+FastAPI automatically generates interactive API documentation.
 
-## API Usage
-
-### POST /posting
-
-Publishes the supplied message to the configured and integrated platforms.
-
-**Example request:**
-
-```json
-{
-  "message": "Hello! This is an automated post from Dxora.",
-  "cta_url": "https://example.com"
-}
-```
-
-The API returns an individual result for each platform, including its success status and any error information.
-
-**Example response structure:**
-
-```json
-{
-  "results": [
-    {
-      "platform": "bluesky",
-      "success": true,
-      "post_id": "post_identifier",
-      "published_url": null,
-      "error": null
-    }
-  ]
-}
-```
-
-Actual response fields depend on the platform implementation and publishing result.
-
-## Testing
-
-Run the complete test suite:
-
-```bash
-python -m pytest -v
-```
-
-Check Python syntax:
-
-```bash
-python -m compileall -q app tests
-```
-
-## Security Practices
-
-- API credentials are stored in environment variables.
-- `.env` is excluded through `.gitignore`.
-- `.env.example` contains placeholder values only.
-- Access tokens and passwords should never be committed to version control.
-
-## Future Improvements
-
-- Scheduled publishing.
-- Publishing history and analytics.
-- Media and image publishing support.
-- Improved automated test coverage.
-- Additional social media integrations.
-
-
-## Author
-
-**Rahul Passi**
-
-B.Tech – Mathematics and Computing  
-Delhi Technological University (DTU)
-
+Open the following URL in your browser
 
