@@ -207,6 +207,12 @@ python -m compileall -q app tests
 - Improved automated test coverage.
 - Additional social media integrations.
 
+
 ## Author
 
-Developed as a Python and FastAPI-based multi-platform social media automation project.
+**Rahul Passi**
+
+B.Tech – Mathematics and Computing  
+Delhi Technological University (DTU)
+
+
