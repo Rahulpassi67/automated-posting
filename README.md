@@ -201,7 +201,7 @@ http://127.0.0.1:8000
 ```
 
 ### Interactive API Documentation
-
+Swagger UI: http://127.0.0.1:8000/docs
 FastAPI automatically generates interactive API documentation.
 
 Open the following URL in your browser
